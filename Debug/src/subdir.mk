@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/Lab8.c 
+../src/myGrep.c 
 
 OBJS += \
-./src/Lab8.o 
+./src/myGrep.o 
 
 C_DEPS += \
-./src/Lab8.d 
+./src/myGrep.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
