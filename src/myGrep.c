@@ -1,10 +1,10 @@
 /*
  ============================================================================
- Name        : Lab8.c
+ Name        : myGrep.c
  Author      : Casey Wu and Kevin Navero
  Version     :
  Copyright   : 
- Description : Hello World in C, Ansi-style
+ Description : grep (Globally search a Regular Expression and Print) implementation
  ============================================================================
  */
 
@@ -12,10 +12,10 @@
 #include <stdlib.h>
 
 int main(int argc, char* argv[]) {
-   if (argc != 4) {
+   if (argc != 3) {
       printf("Error: Wrong number of arguments.\n"
-            "Try: a.out <input file> <search word>\n"
-            "For example: a.out input.txt the\n");
+            "Try: ./a.out <input file> <search word>\n"
+            "For example: ./a.out input.txt the\n");
 
       return 1;
    }
