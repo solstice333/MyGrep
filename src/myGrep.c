@@ -89,16 +89,16 @@ int main(int argc, char* argv[]) {
 
       // TODO integrate the code below into the actual sentence parsing
       // and file i/o logic above
-      Sentence s1;
-      s1.length = 3;
-      s1.line = 1;
+      Sentence *s1 = (Sentence*)malloc(sizeof(Sentence));
+      s1->length = 3;
+      s1->line = 1;
 
-      Sentence s2;
-      s2.length = 4;
-      s2.line = 5;
+      Sentence *s2 = (Sentence*)malloc(sizeof(Sentence));
+      s2->length = 4;
+      s2->line = 5;
 
-      Node *n1 = createNode(&s1);
-      Node *n2 = createNode(&s2);
+      Node *n1 = createNode(s1);
+      Node *n2 = createNode(s2);
 
       LinkedList *ll = (LinkedList*)malloc(sizeof(LinkedList));
       createLinkedList(ll);
