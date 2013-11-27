@@ -8,7 +8,8 @@
  ============================================================================
  */
 
-// TODO test with test.sh within the terminal. Use gcc myGrep.h myGrep.c
+// TODO test with test.sh within the terminal. Use gcc myGrep.* within the terminal to
+// get a.out within src folder
 
 #include <stdio.h>
 #include <stdlib.h>
