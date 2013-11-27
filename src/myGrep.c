@@ -39,11 +39,24 @@ void push_back(LinkedList *list, Node *n) {
    }
 }
 
+void clear(LinkedList *list) {
+   delete(list->head);
+}
+
+void delete(Node *n) {
+   if (n) {
+      delete(n->next);
+      free(n->o.line);
+      free(n);
+   }
+}
+
 void print(LinkedList *list) {
    Node *n = list->head;
 
-   while(n != NULL) {
-      printf("line: %d, length: %d\n", n->o.line, n->o.length);
+   while (n != NULL) {
+      printf("lineNum: %d, length: %d, line: %s\n", n->o.lineNum, n->o.length,
+            n->o.line);
       n = n->next;
    }
 }
@@ -63,58 +76,73 @@ int main(int argc, char* argv[]) {
       char *search = argv[2];
       FILE *ifs = fopen(file, "r");
 
+      // print header - executable filepath, input file, search word
       printf("%s %s %s\n", argv[0], file, search);
 
+      // exit if bad file connection
       if (!ifs) {
          printf("Error: Could not connect to file for reading. Exiting...\n");
          return EXIT_FAILURE;
       }
 
-      char line[100];
-      int lineCount = 0;
+      // store lines into linked list
+      Sentence *s;
+      Node *n;
 
-      while (fgets(line, 100, ifs) != NULL) {
-         if (!feof(ifs))
-            printf("line %d: %s and is %d characters long\n\n",
-                  ++lineCount, line, strlen(line) - 1);
-
-
-         else
-            printf("line %d: %s\n and is %d characters long\n",
-                  ++lineCount, line, strlen(line));
-      }
-
-
-
-
-      // TODO integrate the code below into the actual sentence parsing
-      // and file i/o logic above
-      Sentence *s1 = (Sentence*)malloc(sizeof(Sentence));
-      s1->length = 3;
-      s1->line = 1;
-
-      Sentence *s2 = (Sentence*)malloc(sizeof(Sentence));
-      s2->length = 4;
-      s2->line = 5;
-
-      Node *n1 = createNode(s1);
-      Node *n2 = createNode(s2);
-
-      LinkedList *ll = (LinkedList*)malloc(sizeof(LinkedList));
+      LinkedList *ll = (LinkedList*) malloc(sizeof(LinkedList));
       createLinkedList(ll);
 
-      push_back(ll, n1);
-      push_back(ll, n2);
+      char *line = (char*) malloc(100 * sizeof(char));
+      int lineCount = 0;
+      int max = 0;
 
-      printf("\n\nLinkedList test: \n");
-      print(ll);
+      while (fgets(line, 100, ifs) != NULL) {
+         s = (Sentence*) malloc(sizeof(Sentence));
 
+         // if not the last line
+         if (!feof(ifs)) {
+            s->length = strlen(line) - 1;
+            s->line = line;
+            line = (char*) malloc(100 * sizeof(char));
+         }
 
+         // if last line
+         else {
+            s->length = strlen(line);
+            s->line = line;
+         }
 
+         // track the longest line
+         if (s->length > max)
+            max = s->length;
 
+         s->lineNum = ++lineCount;
+         n = createNode(s);
+         push_back(ll, n);
+      }
+
+      // look for the longest line and print - O(n^2) solution easiest to implement
+      // could go for priority queue at O(1 + n*log(n)). BST would be O((n + 1)*log(n))
+      // which is a bit slower than priority queue.
+      n = ll->head;
+      while (n) {
+         if (n->o.length == max) {
+            printf("longest line: %s", n->o.line);
+
+            if (n->o.lineNum == lineCount)
+               printf("\n");
+
+            printf("num chars: %d\n", n->o.length);
+            printf("num lines: %d\n", lineCount);
+            break;
+         }
+
+         n = n->next;
+      }
+
+      clear(ll);
 
       return EXIT_SUCCESS;
 
    }
-
 }
