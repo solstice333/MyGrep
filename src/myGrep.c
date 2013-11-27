@@ -15,17 +15,38 @@
 
 #define DEBUG 1
 
-LinkedList* createLinkedList(LinkedList *list) {
-   list->head = list->tail = NULL;
-   return list;
+Sentence* createSentence(Sentence *s) {
+   s->length = 0;
+   s->line = NULL;
+   s->lineNum = 0;
+   s->wordIndex = 0;
+   return s;
+}
+
+void deleteObject(Sentence *s) {
+   free(s->line);
 }
 
 Node* createNode(Object *o) {
    Node *n = (Node*) malloc(sizeof(Node));
    n->next = n->prev = NULL;
-   n->o = *o;
+   n->o = o;
 
    return n;
+}
+
+void deleteNode(Node *n) {
+   if (n) {
+      deleteNode(n->next);
+      deleteObject(n->o);
+      free(n->o);
+      free(n);
+   }
+}
+
+LinkedList* createLinkedList(LinkedList *list) {
+   list->head = list->tail = NULL;
+   return list;
 }
 
 void push_back(LinkedList *list, Node *n) {
@@ -39,24 +60,16 @@ void push_back(LinkedList *list, Node *n) {
    }
 }
 
-void clear(LinkedList *list) {
-   delete(list->head);
-}
-
-void delete(Node *n) {
-   if (n) {
-      delete(n->next);
-      free(n->o.line);
-      free(n);
-   }
+void deleteLinkedList(LinkedList *list) {
+   deleteNode(list->head);
 }
 
 void print(LinkedList *list) {
    Node *n = list->head;
 
    while (n != NULL) {
-      printf("lineNum: %d, length: %d, line: %s\n", n->o.lineNum, n->o.length,
-            n->o.line);
+      printf("lineNum: %d, length: %d, line: %s\n", n->o->lineNum, n->o->length,
+            n->o->line);
       n = n->next;
    }
 }
@@ -97,6 +110,7 @@ int main(int argc, char* argv[]) {
 
    while (fgets(line, 100, ifs) != NULL) {
       s = (Sentence*) malloc(sizeof(Sentence));
+      createSentence(s);
 
       // if not the last line
       if (!feof(ifs)) {
@@ -125,19 +139,21 @@ int main(int argc, char* argv[]) {
    // which is a bit slower than priority queue. Can also use rewind() for this
    n = ll->head;
    while (n) {
-      if (n->o.length == max) {
-         printf("longest line: %s", n->o.line);
+      if (n->o->length == max) {
+         printf("longest line: %s", n->o->line);
 
-         if (n->o.lineNum == lineCount)
+         if (n->o->lineNum == lineCount)
             printf("\n");
 
-         printf("num chars: %d\n", n->o.length);
+         printf("num chars: %d\n", n->o->length);
          printf("num lines: %d\n", lineCount);
          break;
       }
 
       n = n->next;
    }
+
+   deleteLinkedList(ll);
 
    return EXIT_SUCCESS;
 

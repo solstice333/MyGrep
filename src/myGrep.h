@@ -14,16 +14,22 @@ typedef struct Sentence {
    int lineNum;
    int length;
    char *line;
+   int word[100];
+   int wordIndex;
 } Object, Sentence;
+
+Sentence* createSentence(Sentence *s);
+void deleteObject(Sentence *s);  // This needs to be named "deleteObject"
 
 // basic Node of a linked list
 typedef struct Node {
-   Object o;
+   Object *o;
    struct Node *prev;
    struct Node *next;
 } Node;
 
-void delete(Node *n);
+Node* createNode(Object *o);
+void deleteNode(Node *n);
 
 // linked list data structure
 typedef struct LinkedList {
@@ -32,9 +38,8 @@ typedef struct LinkedList {
 } LinkedList;
 
 LinkedList* createLinkedList(LinkedList* list);
-Node* createNode(Object *o);
 void push_back(LinkedList *list, Node *n);
-void clear(LinkedList *list);
+void deleteLinkedList(LinkedList *list);
 void print(LinkedList *list);
 
 #endif /* MYGREP_H_ */
