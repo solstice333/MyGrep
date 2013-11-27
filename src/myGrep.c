@@ -100,14 +100,14 @@ int main(int argc, char* argv[]) {
       Node *n1 = createNode(&s1);
       Node *n2 = createNode(&s2);
 
-      LinkedList *ll;
-      createLinkedList(&ll);
+      LinkedList *ll = (LinkedList*)malloc(sizeof(LinkedList));
+      createLinkedList(ll);
 
-      push_back(&ll, n1);
-      push_back(&ll, n2);
+      push_back(ll, n1);
+      push_back(ll, n2);
 
       printf("\n\nLinkedList test: \n");
-      print(&ll);
+      print(ll);
 
 
 
