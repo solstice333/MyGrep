@@ -15,7 +15,7 @@ typedef struct Sentence {
    int length;
    char *line;
    int word[100];
-   int wordIndex;
+   int appearances;
 } Object, Sentence;
 
 Sentence* createSentence(Sentence *s);
@@ -35,6 +35,7 @@ void deleteNode(Node *n);
 typedef struct LinkedList {
    Node *head;
    Node *tail;
+   int size;
 } LinkedList;
 
 LinkedList* createLinkedList(LinkedList* list);

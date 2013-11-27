@@ -1,3 +1,4 @@
 Te st2
-The car hit the fence.
+the car hit the fence.
 Te st3
+the ball rolled down the hill and the cat chased the mouse.

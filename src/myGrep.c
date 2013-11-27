@@ -19,7 +19,7 @@ Sentence* createSentence(Sentence *s) {
    s->length = 0;
    s->line = NULL;
    s->lineNum = 0;
-   s->wordIndex = 0;
+   s->appearances = 0;
    return s;
 }
 
@@ -46,6 +46,7 @@ void deleteNode(Node *n) {
 
 LinkedList* createLinkedList(LinkedList *list) {
    list->head = list->tail = NULL;
+   list->size = 0;
    return list;
 }
 
@@ -58,6 +59,8 @@ void push_back(LinkedList *list, Node *n) {
       n->prev = list->tail;
       list->tail = list->tail->next;
    }
+
+   list->size++;
 }
 
 void deleteLinkedList(LinkedList *list) {
@@ -68,8 +71,20 @@ void print(LinkedList *list) {
    Node *n = list->head;
 
    while (n != NULL) {
-      printf("lineNum: %d, length: %d, line: %s\n", n->o->lineNum, n->o->length,
+      printf("\nlineNum: %d, length: %d, line: %s", n->o->lineNum, n->o->length,
             n->o->line);
+
+      if (n->o->lineNum == list->size)
+         printf("\n");
+
+      printf("appearances: %d", n->o->appearances);
+      int i = 0;
+      for (i = 0; i < n->o->appearances; i++) {
+         printf(", word: %d", n->o->word[i]);
+      }
+
+      printf("\n");
+
       n = n->next;
    }
 }
@@ -129,6 +144,22 @@ int main(int argc, char* argv[]) {
       if (s->length > max)
          max = s->length;
 
+      //parse sentences for search word
+      char tempLine[100];
+      strcpy(tempLine, s->line);
+      char *pch = strtok(tempLine, " ,.?");
+
+      int count = 0;
+      while (pch) {
+         if (strcmp(pch, search) == 0)
+            s->word[s->appearances++] = count;
+
+         count++;
+         pch = strtok(NULL, " ,.?");
+      }
+
+      // set the line number and wrap inside Node then push to the back of
+      // the linked list
       s->lineNum = ++lineCount;
       n = createNode(s);
       push_back(ll, n);
@@ -153,6 +184,7 @@ int main(int argc, char* argv[]) {
       n = n->next;
    }
 
+   print(ll);
    deleteLinkedList(ll);
 
    return EXIT_SUCCESS;
