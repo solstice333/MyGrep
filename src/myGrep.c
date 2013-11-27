@@ -8,12 +8,14 @@
  ============================================================================
  */
 
+// TODO test with test.sh within the terminal. Use gcc myGrep.h myGrep.c
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "myGrep.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 Sentence* createSentence(Sentence *s) {
    s->length = 0;
@@ -78,7 +80,7 @@ void print(LinkedList *list) {
          printf("\n");
 
       printf("appearances: %d", n->o->appearances);
-      int i = 0;
+      int i;
       for (i = 0; i < n->o->appearances; i++) {
          printf(", word: %d", n->o->word[i]);
       }
@@ -147,15 +149,15 @@ int main(int argc, char* argv[]) {
       //parse sentences for search word
       char tempLine[100];
       strcpy(tempLine, s->line);
-      char *pch = strtok(tempLine, " ,.?");
+      char *pch = strtok(tempLine, " ,.?\n");
 
-      int count = 0;
+      int pos = 0;
       while (pch) {
          if (strcmp(pch, search) == 0)
-            s->word[s->appearances++] = count;
+            s->word[s->appearances++] = pos;
 
-         count++;
-         pch = strtok(NULL, " ,.?");
+         pos++;
+         pch = strtok(NULL, " ,.?\n");
       }
 
       // set the line number and wrap inside Node then push to the back of
@@ -165,28 +167,58 @@ int main(int argc, char* argv[]) {
       push_back(ll, n);
    }
 
-   // look for the longest line and print - O(n^2) solution easiest to implement
-   // could go for priority queue at O(1 + n*log(n)). BST would be O((n + 1)*log(n))
+   // Look for (1) the longest line and print - O(n^2) solution easiest to implement.
+   // Keep track of total for follow up printf
+   // Could go for priority queue at O(1 + n*log(n)). BST would be O((n + 1)*log(n))
    // which is a bit slower than priority queue. Can also use rewind() for this
+   int total = 0;
    n = ll->head;
+
    while (n) {
       if (n->o->length == max) {
          printf("longest line: %s", n->o->line);
 
-         if (n->o->lineNum == lineCount)
+         if (n->o->lineNum == ll->size)
             printf("\n");
 
          printf("num chars: %d\n", n->o->length);
-         printf("num lines: %d\n", lineCount);
-         break;
+         printf("num lines: %d\n", ll->size);
+      }
+
+      total += n->o->appearances;
+      n = n->next;
+   }
+
+   // print total occurrences of search word
+   printf("total occurrences of word: %d\n", total);
+
+   // print line number for those where the search word has occurred, and
+   // print word positions within that line
+   n = ll->head;
+   while (n) {
+      if (n->o->appearances) {
+         printf("line %d:", n->o->lineNum);
+
+         int i;
+         for (i = 0; i < n->o->appearances; i++) {
+            if (i == 0)
+               printf(" word %d", n->o->word[i]);
+            else
+               printf("; word %d", n->o->word[i]);
+         }
+         printf("; %s", n->o->line);
       }
 
       n = n->next;
    }
+   printf("\n");
 
+#if DEBUG
    print(ll);
+#endif
+
+   // teardown/deconstruction/free memory back to heap
    deleteLinkedList(ll);
 
    return EXIT_SUCCESS;
-
 }
